@@ -3,7 +3,7 @@ import shape.*;
 
 public class Main {
     private static int passedCount = 0;
-    private static final int TOTAL_CHECKS = 5;
+    private static final int TOTAL_CHECKS = 7;
 
     public static void main(String[] args) {
         if (args.length > 0 && args[0].equals("--demo")) {
@@ -16,6 +16,7 @@ public class Main {
     private static void runDemo() {
         Renderer vRenderer = new VectorRenderer();
         Renderer rRenderer = new RasterRenderer();
+        Renderer aRenderer = new AsciiRenderer();
 
         // T1: A1 with I1
         Circle c1 = new Circle("SHAPE-C1", 2.0, vRenderer);
@@ -56,6 +57,14 @@ public class Main {
             System.out.printf("T5 FAIL sameObject=%b | stateUnchanged=%b%nbefore=%s | after=%s%n",
                     sameObject, stateUnchanged, beforeResult, afterResult);
         }
+
+        // T6: A1 with I3 (AsciiRenderer)
+        Circle c3 = new Circle("SHAPE-C1", 2.0, aRenderer);
+        checkEquals("T6", "Circle + AsciiRenderer", "ASCII [O] circle r=2", c3.execute());
+
+        // T7: A2 with I3 (AsciiRenderer)
+        Square s3 = new Square("SHAPE-S1", 3.0, aRenderer);
+        checkEquals("T7", "Square + AsciiRenderer", "ASCII [#] square s=3", s3.execute());
 
         System.out.printf("SUMMARY: %d/%d PASS%n", passedCount, TOTAL_CHECKS);
     }

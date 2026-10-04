@@ -1,0 +1,42 @@
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java
++++ b/src/Main.java
+@@ -4,3 +4,3 @@
+ public class Main {
+     private static int passedCount = 0;
+-    private static final int TOTAL_CHECKS = 5;
++    private static final int TOTAL_CHECKS = 7;
+
+@@ -16,2 +16,3 @@
+         Renderer rRenderer = new RasterRenderer();
++        Renderer aRenderer = new AsciiRenderer();
+
+@@ -46,2 +47,10 @@
+         }
++
++        // T6: A1 with I3 (AsciiRenderer)
++        Circle c3 = new Circle("SHAPE-C1", 2.0, aRenderer);
++        checkEquals("T6", "Circle + AsciiRenderer", "ASCII [O] circle r=2", c3.execute());
++
++        // T7: A2 with I3 (AsciiRenderer)
++        Square s3 = new Square("SHAPE-S1", 3.0, aRenderer);
++        checkEquals("T7", "Square + AsciiRenderer", "ASCII [#] square s=3", s3.execute());
+
+diff --git a/src/renderer/AsciiRenderer.java b/src/renderer/AsciiRenderer.java
+new file mode 100644
+--- /dev/null
++++ b/src/renderer/AsciiRenderer.java
+@@ -0,0 +1,14 @@
++package renderer;
++
++public class AsciiRenderer implements Renderer {
++    @Override
++    public String renderCircle(double radius) {
++        return "ASCII [O] circle r=" + (int) radius;
++    }
++
++    @Override
++    public String renderSquare(double side) {
++        return "ASCII [#] square s=" + (int) side;
++    }
++}
