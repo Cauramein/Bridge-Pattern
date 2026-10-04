@@ -3,7 +3,7 @@
 - **Group:** SE-2523
 - **Topic:** Option A (Drawing Hierarchy)
 - **Repository URL:** https://github.com/Cauramein/assignment3-bridge
-- **Base Commit Hash:** 54b95cda1938876ed19bf531b3fef8e771381114
+- **Base Commit Hash:** f09b9278d14c4e3859c0736ef993b642bd9561f1
 
 ## Role Map
 
