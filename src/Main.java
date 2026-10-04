@@ -1,13 +1,71 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-void main() {
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    IO.println(String.format("Hello and welcome!"));
+import renderer.*;
+import shape.*;
 
-    for (int i = 1; i <= 5; i++) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        IO.println("i = " + i);
+public class Main {
+    private static int passedCount = 0;
+    private static final int TOTAL_CHECKS = 5;
+
+    public static void main(String[] args) {
+        if (args.length > 0 && args[0].equals("--demo")) {
+            runDemo();
+        } else {
+            System.out.println("Use --demo flag to run automated evaluation checks.");
+        }
+    }
+
+    private static void runDemo() {
+        Renderer vRenderer = new VectorRenderer();
+        Renderer rRenderer = new RasterRenderer();
+
+        // T1: A1 with I1
+        Circle c1 = new Circle("SHAPE-C1", 2.0, vRenderer);
+        checkEquals("T1", "Circle + VectorRenderer", "VECTOR circle radius=2", c1.execute());
+
+        // T2: A1 with I2
+        Circle c2 = new Circle("SHAPE-C1", 2.0, rRenderer);
+        checkEquals("T2", "Circle + RasterRenderer", "RASTER circle pixels=20", c2.execute());
+
+        // T3: A2 with I1
+        Square s1 = new Square("SHAPE-S1", 3.0, vRenderer);
+        checkEquals("T3", "Square + VectorRenderer", "VECTOR square side=3", s1.execute());
+
+        // T4: A2 with I2
+        Square s2 = new Square("SHAPE-S1", 3.0, rRenderer);
+        checkEquals("T4", "Square + RasterRenderer", "RASTER square side=30", s2.execute());
+
+        // T5: Runtime switch on single instance
+        Circle switchCircle = new Circle("SHAPE-SW-1", 2.0, vRenderer);
+        String beforeResult = switchCircle.execute();
+        Circle refBefore = switchCircle;
+        String idBefore = switchCircle.getId();
+        double radiusBefore = switchCircle.getRadius();
+
+        switchCircle.setImplementation(rRenderer);
+        Circle refAfter = switchCircle;
+        String afterResult = switchCircle.execute();
+
+        boolean sameObject = (refBefore == refAfter);
+        boolean stateUnchanged = idBefore.equals(switchCircle.getId()) && (radiusBefore == switchCircle.getRadius());
+        boolean behaviorChanged = beforeResult.equals("VECTOR circle radius=2") && afterResult.equals("RASTER circle pixels=20");
+
+        if (sameObject && stateUnchanged && behaviorChanged) {
+            passedCount++;
+            System.out.printf("T5 PASS sameObject=%b | stateUnchanged=%b%nbefore=%s | after=%s%n",
+                    sameObject, stateUnchanged, beforeResult, afterResult);
+        } else {
+            System.out.printf("T5 FAIL sameObject=%b | stateUnchanged=%b%nbefore=%s | after=%s%n",
+                    sameObject, stateUnchanged, beforeResult, afterResult);
+        }
+
+        System.out.printf("SUMMARY: %d/%d PASS%n", passedCount, TOTAL_CHECKS);
+    }
+
+    private static void checkEquals(String testId, String context, String expected, String actual) {
+        if (expected.equals(actual)) {
+            passedCount++;
+            System.out.printf("%s PASS | %s | result=%s%n", testId, context, actual);
+        } else {
+            System.out.printf("%s FAIL | %s | expected='%s' but got='%s'%n", testId, context, expected, actual);
+        }
     }
 }
